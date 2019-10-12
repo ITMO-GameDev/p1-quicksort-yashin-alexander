@@ -1,0 +1,21 @@
+env:
+ - BUILD_DIR=build
+
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      dist: xenial
+      sudo: false
+      compiler: gcc
+
+addons:
+  apt:
+    packages:
+    - cmake
+
+before_script:
+ - ./configure
+
+script:
+ - cmake --build ${BUILD_DIR}
