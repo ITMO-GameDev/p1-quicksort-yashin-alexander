@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(salo LANGUAGES CXX)
+project(hw LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,5 +11,5 @@ add_subdirectory(src)
 
 target_link_libraries(main
     ${DEFAULT_LIBRARIES}
-    ${META_PROJECT_NAME}::salolib
+    ${META_PROJECT_NAME}::hwlib
 )
