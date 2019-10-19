@@ -1,21 +1,18 @@
-set(target salolib)
-
+set(target hwlib)
 
 set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(source_path  "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 set(headers
-    ${include_path}/quicksort.hpp
-)
-
-set(sources
-    ${source_path}/quicksort.cpp
+    ${include_path}/sort.hpp
 )
 
 add_library(${target}
-    ${sources}
     ${headers}
 )
+
+set_target_properties(${target} PROPERTIES LINKER_LANGUAGE CXX)
+
 # Create namespaced alias
 add_library(${META_PROJECT_NAME}::${target} ALIAS ${target})
 

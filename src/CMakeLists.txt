@@ -1,2 +1,3 @@
-set(target salolib)
-add_subdirectory(salolib)
+set(target hwlib)
+add_subdirectory(hwlib)
+add_subdirectory(tests)
