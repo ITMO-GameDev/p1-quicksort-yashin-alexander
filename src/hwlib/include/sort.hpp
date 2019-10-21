@@ -6,6 +6,8 @@
 
 using namespace std;
 
+const int MAX_THRESH = 4;
+
 
 template<typename T>
 T _mediana(T *first, T *second, T *third)
@@ -40,7 +42,6 @@ T _get_pivot(T *first, T *last)
 }
 
 
-
 template<typename T, typename ComparatorFunc>
 int _hoare_partition(T *first, T *last, ComparatorFunc comparator)
 {
@@ -50,10 +51,10 @@ int _hoare_partition(T *first, T *last, ComparatorFunc comparator)
 
     while (true){
         do { i++; }
-        while (first[i] < pivot);
+        while (comparator(first[i], pivot));
 
         do { j--; }
-        while (first[j] > pivot);
+        while (comparator(pivot, first[j]));
 
         if (i >= j)
             return j;
@@ -71,15 +72,60 @@ void quicksort(T *first, T *last, ComparatorFunc comparator)
 
         if (&first[pivot] - first < last - &first[pivot])
         {
-            quicksort(first, &first[pivot - 1], NULL);
-            first = &first[pivot + 1];
+            quicksort(first, &first[pivot], comparator);
+            first = &first[pivot + 1 ];
         }
         else
         {
-            quicksort(&first[pivot + 1], last, NULL);
-            last = &first[pivot - 1];
+            quicksort(&first[pivot + 1], last, comparator);
+            last = &first[pivot];
         }
     }
 }
+
+
+template<typename T, typename ComparatorFunc>
+void insertion_sort(T *first, T *last, ComparatorFunc comparator)
+{
+    T tmp;
+    int previous_element_index;
+
+    for (int cnt = 1; cnt < last - first + 1; cnt++)
+    {
+        tmp = first[cnt];
+        previous_element_index = cnt - 1;
+        while (previous_element_index >= 0 && comparator(tmp, first[previous_element_index]))
+        {
+            first[previous_element_index + 1] = first[previous_element_index];
+            first[previous_element_index] = tmp;
+            previous_element_index--;
+        }
+    }
+}
+
+
+template<typename T, typename ComparatorFunc>
+void sort(T *first, T *last, ComparatorFunc comparator)
+{
+    if (last - first < MAX_THRESH)
+        insertion_sort(first, last, comparator);
+    else
+        quicksort(first, last, comparator);
+}
+
+
+template <typename T>
+bool forward_comparator(T a, T b)
+{
+    return a < b;
+}
+
+
+template <typename T>
+bool backward_comparator(T a, T b)
+{
+    return a > b;
+}
+
 
 #endif // QUICKSORT_HPP
