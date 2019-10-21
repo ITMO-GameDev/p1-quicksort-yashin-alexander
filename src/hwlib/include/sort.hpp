@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int MAX_THRESH = 4;
+const int MAX_THRESH = 16; // taken from GNU's qsort
 
 
 template<typename T>
@@ -64,6 +64,10 @@ int _hoare_partition(T *first, T *last, ComparatorFunc comparator)
 
 
 template<typename T, typename ComparatorFunc>
+void sort(T *first, T *last, ComparatorFunc comparator);
+
+
+template<typename T, typename ComparatorFunc>
 void quicksort(T *first, T *last, ComparatorFunc comparator)
 {
     while (last > first)
@@ -72,12 +76,12 @@ void quicksort(T *first, T *last, ComparatorFunc comparator)
 
         if (&first[pivot] - first < last - &first[pivot])
         {
-            quicksort(first, &first[pivot], comparator);
+            sort(first, &first[pivot], comparator);
             first = &first[pivot + 1 ];
         }
         else
         {
-            quicksort(&first[pivot + 1], last, comparator);
+            sort(&first[pivot + 1], last, comparator);
             last = &first[pivot];
         }
     }
