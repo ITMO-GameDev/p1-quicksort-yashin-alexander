@@ -26,5 +26,5 @@ before_script:
 
 script:
  - cmake --build ${BUILD_DIR}
- - ./${BUILD_DIR}/src/tests/hwtests
+ - ./${BUILD_DIR}/src/tests/hwtest
 

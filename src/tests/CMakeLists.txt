@@ -12,10 +12,8 @@ include_directories(
     ${GTEST_INCLUDE_DIRS}
 )
 
-add_executable(
-  hwtests ./hwtest.cpp
-  )
+add_executable(hwtest ./sorttest.cpp ./arraytest.cpp)
 
-target_link_libraries(hwtests ${GTEST_LIBRARIES} Threads::Threads)
+target_link_libraries(hwtest ${GTEST_LIBRARIES} Threads::Threads)
 
 enable_testing()
