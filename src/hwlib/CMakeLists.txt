@@ -5,6 +5,7 @@ set(source_path  "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 set(headers
     ${include_path}/sort.hpp
+    ${include_path}/containers.hpp
 )
 
 add_library(${target}
