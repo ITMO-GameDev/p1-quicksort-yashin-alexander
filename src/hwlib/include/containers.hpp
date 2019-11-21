@@ -7,6 +7,7 @@
 
 const int MIN_CAPACITY = 0;
 const int INCREMENTION_MULTIPLIE = 2;
+const int LIST_CHUNK_SIZE = 8;
 
 
 template<typename T>
@@ -253,5 +254,177 @@ public:
     }
 };
 
+
+
+template<typename T>
+class LinkedList
+{
+private:
+    struct Chunk
+    {
+        Array<T> *_container;
+        int _size;
+        int _capacity;
+        Chunk * next;
+        Chunk * prev;
+
+        Chunk(const int capacity, Chunk *prev_chunk, Chunk *next_chunk):
+        _size(0),
+        _capacity(capacity),
+        next(next_chunk),
+        prev(prev_chunk)
+        {
+            _container = new Array<T>(capacity);
+        }
+
+        ~Chunk()
+        {}
+
+        void insert_to_start(const T& value)
+        {
+            this->_container->insert(0, value);
+            this->_size++;
+        }
+
+        void insert_to_end(const T& value)
+        {
+            this->_container->insert(value);
+            this->_size++;
+        }
+
+        int const size()
+        {
+            return this->_size;
+        }
+
+        bool const filled()
+        {
+            return this->_capacity == this->_size;
+
+        }
+
+        void remove_first()
+        {
+            this->_container->remove(0);
+            this->_size--;
+        }
+
+        void remove_last()
+        {
+            int cnt_size;
+            cnt_size = this->_container->size() - 1;
+            this->_container->remove(cnt_size);
+            this->_size--;
+        }
+
+        const T& first()
+        {
+            auto it = this->_container->begin();
+            it.next();
+            return it.get();
+        }
+
+        const T& last()
+        {
+            auto it = this->_container->end();
+            it.prev();
+            return it.get();
+        }
+    };
+
+    Chunk *_storage_ptr;
+    Chunk * _head_chunk_ptr;
+    Chunk * _tail_chunk_ptr;
+    int _size;
+public:
+    LinkedList():
+    _storage_ptr(nullptr),
+    _size(0)
+    {
+        this->_tail_chunk_ptr = new Chunk(LIST_CHUNK_SIZE, nullptr, nullptr);
+        this->_head_chunk_ptr = this->_tail_chunk_ptr;
+    }
+
+    void insert_head(const T& value)
+    {
+        if (this->_head_chunk_ptr->filled())
+        {
+            this->_head_chunk_ptr->prev = new Chunk(LIST_CHUNK_SIZE, nullptr, this->_storage_ptr);
+            this->_head_chunk_ptr = this->_head_chunk_ptr->prev;
+        }
+        this->_head_chunk_ptr->insert_to_start(value);
+        this->_size++;
+    }
+
+    void insert_tail(const T& value)
+    {
+        if (this->_tail_chunk_ptr->filled())
+        {
+            this->_tail_chunk_ptr->next = new Chunk(LIST_CHUNK_SIZE, this->_tail_chunk_ptr, nullptr);
+            this->_tail_ptr = this->_tail_chunk_ptr->next;
+        }
+        this->_tail_chunk_ptr->insert_to_end(value);
+        this->_size++;
+    }
+
+    void remove_head()
+    {
+        if (this->size() == 0)
+            return;
+
+        this->_head_chunk_ptr->remove_first();
+        this->_size--;
+
+        // get rid of empty chunks
+        if (this->_head_chunk_ptr->next == nullptr)  // keep chunk if it's last
+            return;
+
+        if (this->_head_chunk_ptr->size() == 0)  // and remove if it's not
+        {
+            this->_head_chunk_ptr = this->_head_chunk_ptr->next;
+            this->_head_chunk_ptr->prev->~Chunk();
+            this->_head_chunk_ptr->prev = nullptr;
+        }
+    }
+
+    void remove_tail()
+    {
+        if (this->size() == 0)
+            return;
+
+        this->_tail_chunk_ptr->remove_last();
+        this->_size--;
+
+        // get rid of empty chunks
+        if (this->_tail_chunk_ptr->prev == nullptr)  // keep chunk if it's last
+            return;
+
+        if (this->_tail_chunk_ptr->size() == 0)  // and remove if it's not
+        {
+            this->_tail_chunk_ptr = this->_tail_chunk_ptr->prev;
+            this->_tail_chunk_ptr->next->~Chunk();
+            this->_tail_chunk_ptr->next = nullptr;
+        }
+    }
+
+    const T& head()
+    {
+        if (this->size() == 0)
+            throw std::runtime_error("Unable to read head, List is empty");
+        return this->_head_chunk_ptr->first();
+    }
+
+    const T& tail()
+    {
+        if (this->size() == 0)
+            throw std::runtime_error("Unable to read head, List is empty");
+        return this->_tail_chunk_ptr->last();
+    }
+
+    int size() const
+    {
+        return this->_size;
+    }
+};
 
 #endif // CONTAINERS_HPP
