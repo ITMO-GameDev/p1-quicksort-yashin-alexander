@@ -49,7 +49,7 @@ Array<int> generate()
 }
 
 
-void _containers_tmp()
+void _array_tmp()
 {
     Array<int> a(0);
     for (int i = 0; i < 9; i++)
@@ -75,10 +75,29 @@ void _containers_tmp()
     _print_array_info(a);
 }
 
+void _linked_list_tmp()
+{
+    LinkedList<int> l ;
+    for (int i=0; i< 10; i++)
+        l.insert_head(i);
+
+    std::cout << l.head() << '\n';
+    std::cout << l.tail() << '\n';
+    l.remove_head();
+    std::cout << l.head() << '\n';
+    std::cout << l.tail() << '\n';
+    l.remove_tail();
+    std::cout << l.head() << '\n';
+    std::cout << l.tail() << '\n';
+    std::cout << l.head() << '\n';
+}
+
+
 int main(int argc, char** argv)
 {
-    int array[] = {7, 2, 2, 2, 1, 5, 5, 5, 0};
-    _sort_tmp(array, sizeof (array)/ sizeof (int));
-    _containers_tmp();
+//    int array[] = {7, 2, 2, 2, 1, 5, 5, 5, 0};
+//    _sort_tmp(array, sizeof (array)/ sizeof (int));
+//    _array_tmp();
+    _linked_list_tmp();
     return 0;
 }
