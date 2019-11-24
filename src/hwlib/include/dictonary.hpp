@@ -47,6 +47,78 @@ private:
             return this->balance_factor <= 1;
         }
 
+        int elements_count()
+        {
+            int left_cnt = 0;
+            int right_cnt = 0;
+            if (this->left == nullptr)
+                left_cnt = 0;
+            else
+                left_cnt = this->left->elements_count();
+            if (this->right == nullptr)
+                right_cnt = 0;
+            else
+                right_cnt = this->right->elements_count();
+            return right_cnt + left_cnt + 1;
+        }
+
+        Node* find_minimal(Node* p)
+        {
+            if (p->left != nullptr)
+                return find_minimal(p->left);
+            else
+                return p;
+        }
+
+        Node* remove_minimal(Node* p)
+        {
+            if (p->left == nullptr)
+                return p->right;
+            p->left = this->remove_minimal(p->left);
+            return balance(p);
+        }
+
+        Node* remove(Node* p, int k)
+        {
+            if (p == nullptr)
+                return 0;
+            if (k < p->key)
+                p->left = this->remove(p->left, k);
+            else if (k > p->key)
+                p->right = this->remove(p->right, k);
+            else
+            {
+                Node* l = p->left;
+                Node* r = p->right;
+                delete p;
+                if (r == nullptr)
+                    return l;
+                Node * min = find_minimal(r);
+                min->right = remove_minimal(r);
+                min->left = l;
+                return this->balance(min);
+            }
+            return this->balance(p);
+        }
+
+        Node* get(const K& key)
+        {
+            if (this->key == key)
+                return this;
+            else if (this->key > key)
+            {
+                if (this->left == nullptr)
+                    return nullptr;
+                return this->left->get(key);
+            }
+            else
+            {
+                if (this->right == nullptr)
+                    return nullptr;
+                return this->right->get(key);
+            }
+        }
+
         void recalculate_height()
         {
             if (this->left == nullptr && this->right == nullptr)
@@ -129,7 +201,7 @@ private:
     };
     Node *_root_node;
 public:
-    Dictonary()
+    Dictonary():
     {
         this->_root_node = nullptr;
     }
@@ -143,6 +215,47 @@ public:
             this->_root_node = new Node(key, value);
         else
             this->_root_node = this->_root_node->insert(key, value);
+    }
+
+    void remove(const K& key)
+    {
+        if (!this->_root_node)
+            throw std::runtime_error("Key error");
+        this->_root_node = this->_root_node->remove(this->_root_node, key);
+    }
+
+    bool contains(const K& key)
+    {
+        if (!this->_root_node)
+            throw std::runtime_error("Key error");
+        return this->_root_node->get(key) != nullptr;
+    }
+
+    V& operator[](const K& key)
+    {
+        if (!this->_root_node)
+            throw std::runtime_error("Key error");
+        Node* tmp = this->_root_node->get(key);
+        if (tmp == nullptr)
+            throw std::runtime_error("Key error");
+        return this->_root_node->get(key)->value;
+    }
+
+    const V& operator[](const K& key) const
+    {
+        if (!this->_root_node)
+            throw std::runtime_error("Key error");
+        Node* tmp = this->_root_node->get(key);
+        if (tmp == nullptr)
+            throw std::runtime_error("Key error");
+        return this->_root_node->get(key)->value;
+    }
+
+    int const size()
+    {
+        if (!this->_root_node)
+            return 0;
+        return this->_root_node->elements_count();
     }
 
     std::string pformat()
