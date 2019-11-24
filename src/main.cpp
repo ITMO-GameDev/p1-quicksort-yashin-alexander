@@ -1,6 +1,7 @@
 #include <iostream>
 #include "hwlib/include/sort.hpp"
 #include "hwlib/include/containers.hpp"
+#include "hwlib/include/dictonary.hpp"
 
 
 template <typename T>
@@ -93,11 +94,56 @@ void _linked_list_tmp()
 }
 
 
+void _dict_tmp()
+{
+    Dictonary<int, int> d;
+    d.put(9, 4);
+    d.put(8, 2);
+    d.put(6, 3);
+    d.put(7, 1);
+    d.put(1, 3);
+    d.put(3, 3);
+    d.put(2, 3);
+    d.put(5, 3);
+    d.put(22, 3);
+    d.put(-122, 3);
+    d.put(-12, 3);
+    d.put(4, 3);
+    d.put(20, 3);
+    d.put(24, 3);
+    d.put(44, 3);
+    d.put(-233, 3);
+    d.put(0, 3);
+    d.put(11, 3);
+    d.put(-22, 3);
+    d.put(-5, 3);
+    std::cout << d.pformat();
+    std::cout << "--------------------------------\n";
+    std::cout << "size =" << d.size() << std::endl;
+    std::cout << "--------------------------------\n";
+    d.remove(-233);
+    d.remove(-122);
+    d.remove(-12);
+    d.remove(0);
+    d.remove(6);
+    std::cout << d.pformat();
+    std::cout << "--------------------------------\n";
+    std::cout << d.contains(5) << std::endl;
+    std::cout << d.contains(100) << std::endl;
+    std::cout << "--------------------------------\n";
+    std::cout << d[5] << std::endl;
+//    std::cout << d[0] << std::endl; // KeyError
+    std::cout << "--------------------------------\n";
+    std::cout << "size =" << d.size() << std::endl;
+}
+
+
 int main(int argc, char** argv)
 {
 //    int array[] = {7, 2, 2, 2, 1, 5, 5, 5, 0};
 //    _sort_tmp(array, sizeof (array)/ sizeof (int));
 //    _array_tmp();
-    _linked_list_tmp();
+//    _linked_list_tmp();
+    _dict_tmp();
     return 0;
 }
