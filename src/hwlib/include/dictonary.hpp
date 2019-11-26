@@ -2,6 +2,7 @@
 #define DICTONARY_HPP
 
 #include <iostream>
+#include <stack>
 
 
 template<typename K, typename V>
@@ -70,6 +71,14 @@ private:
                 return p;
         }
 
+        Node* find_max(Node* p)
+        {
+            if (p->right != nullptr)
+                return find_max(p->right);
+            else
+                return p;
+        }
+
         Node* remove_minimal(Node* p)
         {
             if (p->left == nullptr)
@@ -78,7 +87,7 @@ private:
             return balance(p);
         }
 
-        Node* remove(Node* p, int k)
+        Node* remove(Node* p, const K k)
         {
             if (p == nullptr)
                 return 0;
@@ -201,7 +210,138 @@ private:
     };
     Node *_root_node;
 public:
-    Dictonary():
+    class Iterator
+    {
+    friend class Dictonary;
+    private:
+        Dictonary <K,V> _dict;
+        int _it_pos;
+        Node* _current_node;
+        Node* _min_node;
+        Node* _max_node;
+        std::stack<Node*> _forward_stack;
+        std::stack<Node*> _backward_stack;
+    public:
+        Iterator(Dictonary<K,V>& dict, bool begin):
+            _dict(dict),
+            _it_pos(0)
+        {
+            Node* tmp;
+            this->_setup_fake_current_node();
+            if (begin){
+                tmp = find_min(this->_dict._root_node);
+                this->_forward_stack.push(tmp);
+            }
+            else{
+                tmp = find_max(this->_dict._root_node);
+                this->_backward_stack.push(tmp);
+            }
+        }
+
+        void _setup_fake_current_node()
+        {
+            _current_node = this->_dict._root_node;
+            _current_node = new Node(_current_node->key, _current_node->value);
+        }
+
+        Node* find_min(Node* p)
+        {
+            if (p->left != nullptr){
+                this->_forward_stack.push(p);
+                return find_min(p->left);
+            }
+            else
+                return p;
+        }
+
+        Node* find_max(Node* p)
+        {
+            if (p->right != nullptr){
+                this->_backward_stack.push(p);
+                return find_max(p->right);
+            }
+            else
+                return p;
+        }
+
+
+        Node* move_forward(Node* p)
+        {
+            if (p->right){
+                if (this->_backward_stack.size())
+                    this->_backward_stack.pop();
+                this->_backward_stack.push(p);
+                return this->find_min(p->right);
+            }
+            else
+                if (!this->_forward_stack.empty()){
+                    Node* tmp = this->_forward_stack.top();
+                    this->_forward_stack.pop();
+                    return tmp;
+                }
+                else
+                    std::runtime_error("Forward stack is empty, stop iteration");
+            return p;
+        }
+
+        Node * move_backward(Node* p)
+        {
+            if (p->left){
+                if (this->_forward_stack.size())
+                    this->_forward_stack.pop();
+                this->_forward_stack.push(p);
+                return this->find_max(p->left);
+            }
+            else
+                if (!this->_backward_stack.empty()){
+                    Node* tmp = this->_backward_stack.top();
+                    this->_backward_stack.pop();
+                    return tmp;
+                } else
+                    std::runtime_error("Backward stack is empty, stop iteration");
+            return p;
+        }
+
+        const K& key() const
+        {
+            return this->_current_node->key;
+        }
+
+        const V& get() const
+        {
+            return this->_current_node->value;
+        }
+
+        void set(const V& value)
+        {
+            this->_current_node->insert(this->_current_node->key, value);
+        }
+
+        void next()
+        {
+            this->_current_node = this->move_forward(_current_node);
+        }
+
+        void prev()
+        {
+            this->_current_node = this->move_backward(_current_node);
+        }
+
+        bool hasNext() const
+        {
+            if (this->_current_node->right)
+                return true;
+            return !this->_forward_stack.empty();
+        }
+
+        bool hasPrev() const
+        {
+            if (this->_current_node->left)
+                return true;
+            return !this->_backward_stack.empty();
+        }
+    };
+    Dictonary()
     {
         this->_root_node = nullptr;
     }
@@ -227,7 +367,7 @@ public:
     bool contains(const K& key)
     {
         if (!this->_root_node)
-            throw std::runtime_error("Key error");
+            return false;
         return this->_root_node->get(key) != nullptr;
     }
 
@@ -256,6 +396,16 @@ public:
         if (!this->_root_node)
             return 0;
         return this->_root_node->elements_count();
+    }
+
+    Iterator begin()
+    {
+        return Iterator(*this, true);
+    }
+
+    Iterator end()
+    {
+        return Iterator(*this, false);
     }
 
     std::string pformat()
