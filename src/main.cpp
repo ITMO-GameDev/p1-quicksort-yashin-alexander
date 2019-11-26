@@ -106,26 +106,14 @@ void _dict_tmp()
     d.put(2, 3);
     d.put(5, 3);
     d.put(22, 3);
-    d.put(-122, 3);
-    d.put(-12, 3);
-    d.put(4, 3);
-    d.put(20, 3);
-    d.put(24, 3);
-    d.put(44, 3);
-    d.put(-233, 3);
-    d.put(0, 3);
-    d.put(11, 3);
     d.put(-22, 3);
     d.put(-5, 3);
     std::cout << d.pformat();
     std::cout << "--------------------------------\n";
     std::cout << "size =" << d.size() << std::endl;
     std::cout << "--------------------------------\n";
-    d.remove(-233);
-    d.remove(-122);
-    d.remove(-12);
-    d.remove(0);
-    d.remove(6);
+    d.remove(22);
+    d.remove(1);
     std::cout << d.pformat();
     std::cout << "--------------------------------\n";
     std::cout << d.contains(5) << std::endl;
@@ -135,6 +123,36 @@ void _dict_tmp()
 //    std::cout << d[0] << std::endl; // KeyError
     std::cout << "--------------------------------\n";
     std::cout << "size =" << d.size() << std::endl;
+    std::cout << "--------------------------------\n";
+    auto i = d.begin();
+    i.next();
+    std::cout << i.key() << '\n';
+    i.next();
+    std::cout << i.key() << '\n';
+    i.next();
+    std::cout << i.key() << '\n';
+    i.next();
+    std::cout << i.key() << '\n';
+
+    std::cout << "get prev\n";
+    i.prev();
+    std::cout << i.key() << '\n';
+    i.prev();
+    std::cout << i.key() << '\n';
+    i.prev();
+    std::cout << i.key() << '\n';
+    i.prev();
+    std::cout << i.key() << '\n';
+    i.prev();
+    std::cout << i.key() << '\n';
+    i.prev();
+    std::cout << i.key() << '\n';
+    i.prev();
+    std::cout << i.key() << '\n';
+    i.prev();
+    std::cout << i.key() << '\n';
+    i.prev();
+    std::cout << i.key() << '\n';
 }
 
 
