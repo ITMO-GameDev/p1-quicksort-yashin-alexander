@@ -12,7 +12,7 @@ include_directories(
     ${GTEST_INCLUDE_DIRS}
 )
 
-add_executable(hwtest ./sorttest.cpp ./arraytest.cpp)
+add_executable(hwtest ./sorttest.cpp ./arraytest.cpp ./dicttest.cpp)
 
 target_link_libraries(hwtest ${GTEST_LIBRARIES} Threads::Threads)
 
