@@ -7,6 +7,7 @@ set(headers
     ${include_path}/sort.hpp
     ${include_path}/containers.hpp
     ${include_path}/dictonary.hpp
+    ${include_path}/memory_allocator.hpp
 )
 
 add_library(${target}
