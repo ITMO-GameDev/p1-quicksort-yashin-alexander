@@ -2,6 +2,7 @@
 #include "hwlib/include/sort.hpp"
 #include "hwlib/include/containers.hpp"
 #include "hwlib/include/dictonary.hpp"
+#include "hwlib/include/memory_allocator.hpp"
 
 
 template <typename T>
@@ -156,12 +157,63 @@ void _dict_tmp()
 }
 
 
+void _malloc_tmp()
+{
+    /*
+    MemoryAllocator ma;
+    ma.init();
+
+    int *pi = ma.alloc(sizeof (int));
+    double *pd = ma.alloc(sizeof (double));
+    int *pa = ma.alloc(10 * sizeof (int));
+
+    ma.dumpBlocks();
+    ma.dumpStat();
+
+    ma.free(pi);
+    ma.free(pd);
+    ma.free(pa);
+    */
+
+    MemoryAllocator ma;
+/*    ma.init();
+    ma.dumpBlocks();
+    ma.alloc(30);
+    ma.alloc(30);
+    ma.alloc(30);
+    ma.alloc(30);
+    ma.alloc(30);
+    ma.alloc(30);
+    ma.alloc(30);
+    char * d = (char *)ma.alloc(512);
+    ma.dumpBlocks();
+    std::cout << static_cast<void *>(d) << '\n';
+    std::cout << *((uint16_t*)d - 1) << '\n';
+    ma.free(d);
+    ma.dumpBlocks();
+    */
+    ma.init();
+    ma.alloc(6000);
+    ma.alloc(8000);
+    ma.alloc(5050);
+    ma.alloc(3050);
+    ma.alloc(13406);
+    ma.alloc(14123);
+    ma.alloc(322228);
+
+    void *p = ma.alloc(600);
+    ma.free(p);
+    ma.dumpBlocks();
+}
+
+
 int main(int argc, char** argv)
 {
 //    int array[] = {7, 2, 2, 2, 1, 5, 5, 5, 0};
 //    _sort_tmp(array, sizeof (array)/ sizeof (int));
 //    _array_tmp();
 //    _linked_list_tmp();
-    _dict_tmp();
+//    _dict_tmp();
+    _malloc_tmp();
     return 0;
 }
