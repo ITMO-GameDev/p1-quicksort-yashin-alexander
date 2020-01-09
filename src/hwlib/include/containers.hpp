@@ -345,6 +345,73 @@ public:
         this->_head_chunk_ptr = this->_tail_chunk_ptr;
     }
 
+    class Iterator: public std::iterator<std::forward_iterator_tag, T>
+    {
+    private:
+        LinkedList<T>& _linked_list;
+        Chunk * _current_chunk_ptr;
+        int16_t _in_chunk_position;
+        int16_t _in_list_position;
+        bool _stop_iteration = false;
+    public:
+        Iterator(LinkedList<T> &linked_list):
+            _linked_list(linked_list),
+            _current_chunk_ptr(linked_list._tail_chunk_ptr),
+            _in_chunk_position(0),
+            _in_list_position(0)
+        {}
+
+        const T& get()
+        {
+            auto it = _current_chunk_ptr->_container->begin();
+            it.to_index(_in_chunk_position);
+            return it.get();
+        }
+
+        bool iteration_stopped()
+        {
+            return this->_stop_iteration;
+        }
+
+        void next()
+        {
+            if (this->_in_list_position == this->_linked_list.size() - 1)
+            {
+                _stop_iteration = true;
+                return;
+            }
+            else if (this->_in_chunk_position == this->_current_chunk_ptr->size() - 1)
+            {
+                //jump to next chunk
+                this->_current_chunk_ptr = this->_current_chunk_ptr->prev;
+                _in_chunk_position = 0;
+                _in_list_position++;
+            } else {
+                _in_chunk_position++;
+                _in_list_position++;
+            }
+        }
+
+        void set(const T& value)
+        {
+            auto it = _current_chunk_ptr->_container->begin();
+            it.to_index(_in_chunk_position);
+            it.set(value);
+        }
+
+        T pop()
+        {
+            T element;
+            auto it = _current_chunk_ptr->_container->begin();
+            it.to_index(_in_chunk_position);
+            element = it.get();
+            it.remove();
+            _linked_list._size--;
+            return element;
+        }
+    };
+
+
     void insert_head(const T& value)
     {
         if (this->_head_chunk_ptr->filled())
@@ -424,6 +491,12 @@ public:
     int size() const
     {
         return this->_size;
+    }
+
+    Iterator iter()
+    {
+        Iterator *it = new Iterator(*this);
+        return *it;
     }
 };
 
