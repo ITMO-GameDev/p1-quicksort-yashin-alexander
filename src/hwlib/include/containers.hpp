@@ -428,7 +428,7 @@ public:
         if (this->_tail_chunk_ptr->filled())
         {
             this->_tail_chunk_ptr->next = new Chunk(LIST_CHUNK_SIZE, this->_tail_chunk_ptr, nullptr);
-            this->_tail_ptr = this->_tail_chunk_ptr->next;
+            this->_tail_chunk_ptr = this->_tail_chunk_ptr->next;
         }
         this->_tail_chunk_ptr->insert_to_end(value);
         this->_size++;
