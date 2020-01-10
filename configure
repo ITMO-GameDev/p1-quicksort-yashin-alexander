@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Default options
+BUILD_DIR="build"
+CMAKE_GENERATOR="Unix Makefiles"
+
+
+if [ ! -d "${BUILD_DIR}" ]
+then
+    mkdir -p "${BUILD_DIR}"
+fi
+
+pushd ${BUILD_DIR}
+echo cmake -G "${CMAKE_GENERATOR}" ../
+cmake -G "$CMAKE_GENERATOR" ../
+popd
+

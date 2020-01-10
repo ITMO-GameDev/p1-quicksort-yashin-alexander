@@ -1,0 +1,30 @@
+env:
+ - BUILD_DIR=build
+
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      dist: xenial
+      sudo: false
+      compiler: gcc
+
+addons:
+  apt:
+    packages:
+    - cmake
+    - libgtest-dev
+
+before_script:
+ - pushd /usr/src/gtest
+ - sudo cmake CMakeLists.txt
+ - sudo make
+ - sudo cp -r *.a /usr/lib
+ - popd
+ - ./configure
+
+
+script:
+ - cmake --build ${BUILD_DIR}
+ - ./${BUILD_DIR}/src/tests/hwtest
+
