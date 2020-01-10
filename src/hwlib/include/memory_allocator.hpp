@@ -51,7 +51,7 @@ private:
         for(int i = 0; i < fragments_in_page; i++)
         {
             meta_info_block[0] = fragment_size;
-            free_lists_dict[fragment_size].insert_head(mem_ptr);
+            free_lists_dict[fragment_size].insert_tail(mem_ptr);
             mem_ptr += fragment_real_size;
             meta_info_block = (uint16_t *)(static_cast<void *>(mem_ptr));
         }
@@ -260,7 +260,7 @@ public:
     {
         uint16_t new_region_identifer;
         new_region_identifer = (existent_region)[0] + ((uint16_t *)region_to_merge)[0] + CA_FRAGMENT_IDENTIFER_SIZE;
-        existent_region[0] = new_region_identifer;
+        ((uint16_t *)region_to_merge)[1] = new_region_identifer;
     }
 
     void free(void * p)
@@ -271,6 +271,7 @@ public:
         uint16_t * region_start;
         uint16_t region_size;
         uint8_t * region_end;
+        uint16_t new_reg_identifer;
 
         region_start = (uint16_t *)p - 1;
         region_size = ((uint16_t *)p)[-1];
@@ -281,8 +282,11 @@ public:
         {
             coalesce_candidate = it.get();
             candidate_size = ((uint16_t*)coalesce_candidate)[0];
-            if (coalesce_candidate == region_end)
+            if (coalesce_candidate == region_end){
                 coalesce_blocks((uint16_t *)coalesce_candidate, (uint8_t *)region_start);
+                it.set((uint8_t *)region_start);
+                return;
+            }
         }
     }
 
@@ -292,7 +296,7 @@ public:
         std::cout << "Coalesce allocator stats:\n" << "Free list size = " << free_list.size() << '\n' << "Blocks:\n";
         for (auto it = free_list_copy.iter(); !it.iteration_stopped(); it.next())
         {
-            std::cout << "Mem available " << ((uint16_t *)it.get())[0] << '\n';
+            std::cout << "" << (void *)it.get() << " mem available " << ((uint16_t *)it.get())[0] << '\n';
         }
     }
 };
